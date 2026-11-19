@@ -1,0 +1,57 @@
+{
+  "name": "profit-lens-mcp",
+  "version": "0.1.0",
+  "description": "MCP server that gives AI agents ecommerce unit-economics superpowers: SKU margins, channel P&L, 13-week cash forecast, reorder alerts and profit-leak detection for DTC brands.",
+  "license": "MIT",
+  "author": "Alan Einstein",
+  "type": "module",
+  "bin": {
+    "profit-lens-mcp": "dist/src/index.js"
+  },
+  "main": "dist/src/index.js",
+  "files": [
+    "dist/src"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/src/index.js",
+    "start:http": "node dist/src/index.js --transport http",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "eval": "tsx evals/run.ts",
+    "check": "npm run typecheck && npm run lint && npm test && npm run eval"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "ecommerce",
+    "dtc",
+    "unit-economics",
+    "fp&a",
+    "ai-agents"
+  ],
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "express": "^5.3.0",
+    "google-auth-library": "^11.3.4",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/express": "^5.0.6",
+    "@types/node": "^24.19.2",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "tsx": "^4.23.15",
+    "typescript": "^6.0.3",
+    "typescript-eslint": "^8.73.0",
+    "vitest": "^5.1.1"
+  }
+}
