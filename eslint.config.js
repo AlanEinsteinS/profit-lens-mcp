@@ -28,7 +28,17 @@ export default tseslint.config(
     ...tseslint.configs.disableTypeChecked,
   },
   {
-    files: ['evals/**/*.ts', 'scripts/**/*.ts'],
-    rules: { 'no-console': 'off' },
+    // Evals assert on raw JSON from the MCP wire, which is untyped by nature.
+    files: ['evals/**/*.ts'],
+    rules: {
+      'no-console': 'off',
+      '@typescript-eslint/no-explicit-any': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-argument': 'off',
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-return': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+      '@typescript-eslint/restrict-plus-operands': 'off',
+    },
   },
 );
