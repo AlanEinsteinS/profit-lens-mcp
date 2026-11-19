@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [20, 22, 24]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm test
+      - run: npm run eval
+      - run: npm run build
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build image
+        run: docker build -t profit-lens-mcp:ci .
+      - name: Start container and wait for the health check
+        run: |
+          docker run -d --name profit-lens -p 127.0.0.1:3000:3000 -e MCP_HTTP_TOKEN=ci-token profit-lens-mcp:ci
+          for i in $(seq 1 30); do
+            if curl -fs http://127.0.0.1:3000/health; then exit 0; fi
+            sleep 1
+          done
+          docker logs profit-lens
+          exit 1
+      - name: Call a tool over Streamable HTTP
+        run: |
+          curl -fs http://127.0.0.1:3000/mcp \
+            -H 'content-type: application/json' \
+            -H 'accept: application/json, text/event-stream' \
+            -H 'authorization: Bearer ci-token' \
+            -d '{"jsonrpc":"2.0","id":1,"method":"tools/call","params":{"name":"find_profit_leaks","arguments":{"limit":3}}}' \
+            | grep -q 'channel_overspend:tiktok'
