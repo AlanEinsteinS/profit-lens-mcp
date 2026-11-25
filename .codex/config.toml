@@ -1,0 +1,3 @@
+[mcp_servers.profit-lens]
+command = "node"
+args = ["dist/src/index.js"]
